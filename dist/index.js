@@ -27253,12 +27253,12 @@ var coreExports = requireCore();
  */
 async function run() {
     try {
-        const packages = coreExports.getInput('packages');
+        const packages = coreExports.getMultilineInput('packages');
         const buildPackages = coreExports.getMultilineInput('packages-build');
         const npmScope = coreExports.getInput('npm-scope');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         coreExports.info(`packages: ${JSON.stringify(packages)}`);
-        coreExports.info(`buildPackages: ${JSON.stringify(buildPackages)}`);
+        coreExports.info(`buildPackages: ${JSON.stringify(buildPackages.map((e) => e.trim().substring(1)))}`);
         coreExports.info(`npmScope: ${npmScope}`);
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());
