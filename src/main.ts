@@ -43,7 +43,7 @@ export async function run(): Promise<void> {
                 }
                 core.info(`---------------------`);
                 core.info(`Errors is: ${errors}`);
-                if (!errors || errors.includes('error')) {
+                if (!errors || errors.includes('[91merror[0m[90m TS')) {
                     core.error((e as ExecException).message);
                     core.error((e as ExecException).stdout ?? '');
                     core.error((e as ExecException).stderr ?? '');

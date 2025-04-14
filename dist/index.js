@@ -27312,7 +27312,7 @@ async function run() {
                 }
                 coreExports.info(`---------------------`);
                 coreExports.info(`Errors is: ${errors}`);
-                if (!errors || errors.includes('error')) {
+                if (!errors || errors.includes('[91merror[0m[90m TS')) {
                     coreExports.error(e.message);
                     coreExports.error(e.stdout ?? '');
                     coreExports.error(e.stderr ?? '');
