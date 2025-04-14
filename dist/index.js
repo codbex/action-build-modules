@@ -27306,6 +27306,7 @@ async function run() {
                 if (errors) {
                     errors = errors?.replaceAll('error TS2688:', '');
                 }
+                ExecutionUtils.run(`echo "${errors}"`, 'src');
                 coreExports.info(`Errors is: ${errors}`);
                 if (!errors || errors.includes('error')) {
                     coreExports.error(e.message);

@@ -37,6 +37,7 @@ export async function run(): Promise<void> {
                 if (errors) {
                     errors = errors?.replaceAll('error TS2688:', '');
                 }
+                ExecutionUtils.run(`echo "${errors}"`, 'src');
                 core.info(`Errors is: ${errors}`);
                 if (!errors || errors.includes('error')) {
                     core.error((e as ExecException).message);
