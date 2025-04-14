@@ -27289,6 +27289,8 @@ async function run() {
             coreExports.info(`${nextPackage} -> ${fullPath}`);
             ExecutionUtils.run('npm install', fullPath);
             ExecutionUtils.run('ls -lah', fullPath);
+            coreExports.warning('Starting tsc ...');
+            ExecutionUtils.run('tsc --pretty', fullPath);
         }
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());
