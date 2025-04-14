@@ -27275,7 +27275,8 @@ class ExecutionUtils {
     }
 }
 
-const errorToken = '[91merror[0m[90m TS';
+const errorToken = `[91merror[0m[90m TS`;
+const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
 /**
  * The main function for the action.
  *
@@ -27305,13 +27306,8 @@ async function run() {
             catch (e) {
                 const exception = e;
                 let errors = exception.stdout;
-                coreExports.info('-----------------------------');
-                for (let i = 0; i < errors.length; i++) {
-                    console.log(`${errors?.charAt(i)}`);
-                }
-                coreExports.info('-----------------------------');
                 if (errors) {
-                    errors = errors?.replaceAll(`${errorToken} TS2688: Cannot find type definition file for '../modules/types'`, '');
+                    errors = errors?.replaceAll(ignoreError, '');
                 }
                 if (!errors || errors.includes(errorToken)) {
                     coreExports.error(exception.message);

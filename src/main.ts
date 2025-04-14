@@ -4,7 +4,9 @@ import { InputUtils } from './InputUtils.js';
 import { ExecutionUtils } from './ExecutionUtils.js';
 import { ExecException } from 'child_process';
 
-const errorToken = '[91merror[0m[90m TS';
+const errorToken = `[91merror[0m[90m TS`;
+const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
+
 /**
  * The main function for the action.
  *
@@ -35,13 +37,8 @@ export async function run(): Promise<void> {
             } catch (e: unknown) {
                 const exception = e as ExecException;
                 let errors = exception.stdout;
-                core.info('-----------------------------');
-                for (let i = 0; i < errors!.length; i++) {
-                    console.log(`${errors?.charAt(i)}`);
-                }
-                core.info('-----------------------------');
                 if (errors) {
-                    errors = errors?.replaceAll(`${errorToken} TS2688: Cannot find type definition file for '../modules/types'`, '');
+                    errors = errors?.replaceAll(ignoreError, '');
                 }
                 if (!errors || errors.includes(errorToken)) {
                     core.error(exception.message);
