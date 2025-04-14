@@ -60,8 +60,8 @@ jobs:
                   packages-build: |
                       - __tests__/codbex-application-module
                   npmrc: |
-                    @codbex:registry=https://npm.pkg.github.com
-                    //npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}
+                      @codbex:registry=https://npm.pkg.github.com
+                      //npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}
 
             - name: Print Output
               id: output

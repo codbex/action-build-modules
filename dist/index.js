@@ -27291,6 +27291,7 @@ async function run() {
             const fullPath = require$$1$5.resolve(nextPackage);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
+                ExecutionUtils.run(`cat .npmrc`, fullPath);
             }
             ExecutionUtils.run('npm install', fullPath);
             if (npmrc) {

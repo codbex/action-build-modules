@@ -22,6 +22,7 @@ export async function run(): Promise<void> {
             const fullPath = path.resolve(nextPackage);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
+                ExecutionUtils.run(`cat .npmrc`, fullPath);
             }
             ExecutionUtils.run('npm install', fullPath);
             if (npmrc) {
