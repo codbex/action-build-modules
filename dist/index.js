@@ -27310,6 +27310,7 @@ async function run() {
                 if (!errors || errors.includes('error TS')) {
                     throw e;
                 }
+                throw e;
                 coreExports.warning('Ignoring codbex "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
             }
