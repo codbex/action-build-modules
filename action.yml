@@ -12,7 +12,7 @@ inputs:
     packages:
         description: List of packages
         required: false
-    build-packages:
+    packages-build:
         description: List of package paths to build
         required: false
     npm-scope:

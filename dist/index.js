@@ -27271,8 +27271,8 @@ async function run() {
         const buildPackages = InputUtils.getArrayInput('packages-build');
         const npmScope = InputUtils.getInput('npm-scope');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        coreExports.info(`packages: ${JSON.stringify(packages.map((e) => e.substring(2).trim()))}`);
-        coreExports.info(`buildPackages: ${JSON.stringify(buildPackages.map((e) => e.substring(2).trim()))}`);
+        coreExports.info(`packages: ${JSON.stringify(packages)}`);
+        coreExports.info(`buildPackages: ${JSON.stringify(buildPackages)}`);
         coreExports.info(`npmScope: ${npmScope}`);
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());
