@@ -27275,6 +27275,7 @@ class ExecutionUtils {
     }
 }
 
+const errorToken = '[91merror[0m[90m TS';
 /**
  * The main function for the action.
  *
@@ -27302,20 +27303,15 @@ async function run() {
                 ExecutionUtils.run('tsc --pretty', fullPath);
             }
             catch (e) {
-                let errors = e.stdout;
+                const exception = e;
+                let errors = exception.stdout;
                 if (errors) {
-                    errors = errors?.replaceAll('[91merror[0m[90m TS2688:', '');
+                    errors = errors?.replaceAll(`${errorToken} TS2688: Cannot find type definition file for '../modules/types'`, '');
                 }
-                coreExports.info(`---------------------`);
-                for (let i = 0; i < errors.length; i++) {
-                    console.log(`i = ${i} = ${errors?.charAt(i)}`);
-                }
-                coreExports.info(`---------------------`);
-                coreExports.info(`Errors is: ${errors}`);
-                if (!errors || errors.includes('[91merror[0m[90m TS')) {
-                    coreExports.error(e.message);
-                    coreExports.error(e.stdout ?? '');
-                    coreExports.error(e.stderr ?? '');
+                if (!errors || errors.includes(errorToken)) {
+                    coreExports.error(exception.message);
+                    coreExports.error(exception.stdout ?? '');
+                    coreExports.error(exception.stderr ?? '');
                     throw e;
                 }
                 coreExports.warning('Ignoring codbex "sdk" related errors');
