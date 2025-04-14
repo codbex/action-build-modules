@@ -27306,7 +27306,11 @@ async function run() {
                 if (errors) {
                     errors = errors?.replaceAll('error TS2688:', '');
                 }
-                ExecutionUtils.run(`echo "${errors}"`, 'src');
+                coreExports.info(`---------------------`);
+                for (let i = 0; i < errors.length; i++) {
+                    console.log(`i = ${i} = ${errors?.charAt(i)}`);
+                }
+                coreExports.info(`---------------------`);
                 coreExports.info(`Errors is: ${errors}`);
                 if (!errors || errors.includes('error')) {
                     coreExports.error(e.message);
