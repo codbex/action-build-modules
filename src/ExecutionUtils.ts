@@ -6,7 +6,7 @@ export class ExecutionUtils {
         try {
             core.startGroup(command);
             core.info(`[${cwd}] $ ${command}`);
-            const result = execSync(command, { cwd, encoding: 'utf-8' });
+            const result = execSync(command, { cwd, encoding: 'utf-8', shell: '/bin/sh' });
             core.info(result);
             return result;
         } finally {

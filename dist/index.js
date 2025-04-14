@@ -27265,7 +27265,7 @@ class ExecutionUtils {
         try {
             coreExports.startGroup(command);
             coreExports.info(`[${cwd}] $ ${command}`);
-            const result = execSync(command, { cwd, encoding: 'utf-8' });
+            const result = execSync(command, { cwd, encoding: 'utf-8', shell: '/bin/sh' });
             coreExports.info(result);
             return result;
         }
@@ -27286,9 +27286,13 @@ async function run() {
     try {
         const buildPackages = InputUtils.getArrayInput('packages-build');
         const npmrc = InputUtils.getInput('npmrc');
+        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP');
+        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP/MVP');
+        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP/MVP/workspace');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         for (const nextPackage of buildPackages) {
             const fullPath = require$$1$5.resolve(nextPackage);
+            ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
                 ExecutionUtils.run(`cat .npmrc`, fullPath);

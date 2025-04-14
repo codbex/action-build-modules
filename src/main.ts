@@ -17,9 +17,14 @@ export async function run(): Promise<void> {
         const buildPackages = InputUtils.getArrayInput('packages-build');
         const npmrc = InputUtils.getInput('npmrc');
 
+        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP');
+        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP/MVP');
+        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP/MVP/workspace');
+
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         for (const nextPackage of buildPackages) {
             const fullPath = path.resolve(nextPackage);
+            ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
                 ExecutionUtils.run(`cat .npmrc`, fullPath);
