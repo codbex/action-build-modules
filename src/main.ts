@@ -31,8 +31,10 @@ export async function run(): Promise<void> {
             core.warning('Starting tsc ...');
             try {
                 ExecutionUtils.run('tsc --pretty', fullPath);
-            } catch (e) {
+            } catch (e: unknown) {
                 core.warning(`Error occurred: ${e}`);
+                core.warning(`Error message: ${(e as Error).message}`);
+                core.warning(`Error cause: ${(e as Error).cause}`);
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }

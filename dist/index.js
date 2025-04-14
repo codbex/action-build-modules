@@ -27295,6 +27295,8 @@ async function run() {
             }
             catch (e) {
                 coreExports.warning(`Error occurred: ${e}`);
+                coreExports.warning(`Error message: ${e.message}`);
+                coreExports.warning(`Error cause: ${e.cause}`);
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }
