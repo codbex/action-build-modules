@@ -27268,7 +27268,13 @@ async function wait(milliseconds) {
 async function run() {
     try {
         const ms = coreExports.getInput('milliseconds');
+        const packages = coreExports.getMultilineInput('packages');
+        const buildPackages = coreExports.getMultilineInput('build-packages');
+        const npmScope = coreExports.getMultilineInput('npm-scope');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
+        coreExports.info(`packages: ${JSON.stringify(packages, null, 4)}`);
+        coreExports.info(`buildPackages: ${JSON.stringify(buildPackages, null, 4)}`);
+        coreExports.info(`npmScope: ${npmScope}`);
         coreExports.warning(`Waiting ${ms} milliseconds ...`);
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());

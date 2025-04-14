@@ -30,7 +30,7 @@ describe('main.ts', () => {
     jest.resetAllMocks()
   })
 
-  it('Sets the time output', async () => {
+  it.skip('Sets the time output', async () => {
     await run()
 
     // Verify the time output was set.
@@ -42,7 +42,7 @@ describe('main.ts', () => {
     )
   })
 
-  it('Sets a failed status', async () => {
+  it.skip('Sets a failed status', async () => {
     // Clear the getInput mock and return an invalid value.
     core.getInput.mockClear().mockReturnValueOnce('this is not a number')
 

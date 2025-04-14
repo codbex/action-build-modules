@@ -9,8 +9,14 @@ import { wait } from './wait.js'
 export async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
+    const packages = core.getMultilineInput('packages')
+    const buildPackages = core.getMultilineInput('build-packages')
+    const npmScope = core.getMultilineInput('npm-scope')
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
+    core.info(`packages: ${JSON.stringify(packages, null, 4)}`)
+    core.info(`buildPackages: ${JSON.stringify(buildPackages, null, 4)}`)
+    core.info(`npmScope: ${npmScope}`)
     core.warning(`Waiting ${ms} milliseconds ...`)
 
     // Log the current timestamp, wait, then log the new timestamp
