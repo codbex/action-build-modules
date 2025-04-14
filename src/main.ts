@@ -3,6 +3,7 @@ import { InputUtils } from './InputUtils.js';
 
 import path from 'path';
 import { ExecutionUtils } from './ExecutionUtils.js';
+import { ExecException } from 'child_process';
 
 /**
  * The main function for the action.
@@ -34,12 +35,17 @@ export async function run(): Promise<void> {
                 core.warning(`Result: ${JSON.stringify(result, null, 4)}`);
             } catch (e: unknown) {
                 core.warning(`Error occurred: ${e}`);
-                core.warning(`Error message: ${(e as Error).message}`);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                if ((e as any).stderr) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    core.warning(`stderr: ${(e as any).stderr}`);
-                }
+                core.warning(`Error cause: ${(e as ExecException).cause}`);
+                core.warning(`Error cmd: ${(e as ExecException).cmd}`);
+                core.warning(`Error code: ${(e as ExecException).code}`);
+                core.warning(`Error killed: ${(e as ExecException).killed}`);
+                core.warning(`Error message: ${(e as ExecException).message}`);
+                core.warning(`Error name: ${(e as ExecException).name}`);
+                core.warning(`Error signal: ${(e as ExecException).signal}`);
+                core.warning(`Error stack: ${(e as ExecException).stack}`);
+                core.warning(`Error stderr: ${(e as ExecException).stderr}`);
+                core.warning(`Error stdout: ${(e as ExecException).stdout}`);
+
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }

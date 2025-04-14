@@ -27301,12 +27301,16 @@ async function run() {
             }
             catch (e) {
                 coreExports.warning(`Error occurred: ${e}`);
+                coreExports.warning(`Error cause: ${e.cause}`);
+                coreExports.warning(`Error cmd: ${e.cmd}`);
+                coreExports.warning(`Error code: ${e.code}`);
+                coreExports.warning(`Error killed: ${e.killed}`);
                 coreExports.warning(`Error message: ${e.message}`);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                if (e.stderr) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    coreExports.warning(`stderr: ${e.stderr}`);
-                }
+                coreExports.warning(`Error name: ${e.name}`);
+                coreExports.warning(`Error signal: ${e.signal}`);
+                coreExports.warning(`Error stack: ${e.stack}`);
+                coreExports.warning(`Error stderr: ${e.stderr}`);
+                coreExports.warning(`Error stdout: ${e.stdout}`);
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }
