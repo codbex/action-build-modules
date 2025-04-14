@@ -15,14 +15,14 @@ export async function run(): Promise<void> {
         for (const nextPackage of buildPackages) {
             const fullPath = path.resolve(nextPackage);
             if (npmrc) {
-                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
+                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
             }
-            ExecutionUtils.run('npm install', fullPath);
+            ExecutionUtils.run('npm install', fullPath, 'Installing NPM dependencies');
             if (npmrc) {
-                ExecutionUtils.run(`rm -rf .npmrc`, fullPath);
+                ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
             }
             try {
-                ExecutionUtils.run('tsc --pretty', fullPath);
+                ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
             } catch (e: unknown) {
                 ignoreKnownErrors(e as ExecException);
             }

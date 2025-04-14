@@ -27247,10 +27247,10 @@ function requireCore () {
 var coreExports = requireCore();
 
 class ExecutionUtils {
-    static run(command, cwd) {
+    static run(command, cwd, groupName) {
         try {
-            coreExports.startGroup(command);
-            coreExports.info(`[${cwd}] $ ${command}`);
+            coreExports.startGroup(groupName ?? command);
+            coreExports.info(`${cwd} ${command}`);
             const result = execSync(command, { cwd, encoding: 'utf-8', shell: '/bin/sh' });
             coreExports.info(result);
             return result;
@@ -27284,14 +27284,14 @@ async function run() {
         for (const nextPackage of buildPackages) {
             const fullPath = require$$1$5.resolve(nextPackage);
             if (npmrc) {
-                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
+                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
             }
-            ExecutionUtils.run('npm install', fullPath);
+            ExecutionUtils.run('npm install', fullPath, 'Installing NPM dependencies');
             if (npmrc) {
-                ExecutionUtils.run(`rm -rf .npmrc`, fullPath);
+                ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
             }
             try {
-                ExecutionUtils.run('tsc --pretty', fullPath);
+                ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
             }
             catch (e) {
                 ignoreKnownErrors(e);
