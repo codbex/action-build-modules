@@ -11,11 +11,20 @@ export async function run(): Promise<void> {
     const ms: string = core.getInput('milliseconds')
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
+    console.log(`Waiting ${ms} milliseconds ...`)
+    console.warn(`Waiting ${ms} milliseconds ...`)
+    console.error(`Waiting ${ms} milliseconds ...`)
     core.warning(`Waiting ${ms} milliseconds ...`)
 
     // Log the current timestamp, wait, then log the new timestamp
+    console.log(new Date().toTimeString())
+    console.warn(new Date().toTimeString())
+    console.error(new Date().toTimeString())
     core.warning(new Date().toTimeString())
     await wait(parseInt(ms, 10))
+    console.log(new Date().toTimeString())
+    console.warn(new Date().toTimeString())
+    console.error(new Date().toTimeString())
     core.warning(new Date().toTimeString())
 
     // Set outputs for other workflow steps to use
