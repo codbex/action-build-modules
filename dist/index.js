@@ -25,7 +25,7 @@ import require$$1$4 from 'url';
 import require$$3$1 from 'zlib';
 import require$$6 from 'string_decoder';
 import require$$0$9 from 'diagnostics_channel';
-import require$$2$2 from 'child_process';
+import require$$2$2, { execSync } from 'child_process';
 import require$$6$1 from 'timers';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -27260,6 +27260,13 @@ class InputUtils {
     }
 }
 
+class ExecutionUtils {
+    static run(command, cwd) {
+        console.log(`[${cwd}] $ ${command}`);
+        execSync(command, { cwd, stdio: 'inherit' });
+    }
+}
+
 /**
  * The main function for the action.
  *
@@ -27278,7 +27285,10 @@ async function run() {
             coreExports.info(`${nextPackage} -> ${require$$1$5.resolve(nextPackage)}`);
         }
         for (const nextPackage of buildPackages) {
-            coreExports.info(`${nextPackage} -> ${require$$1$5.resolve(nextPackage)}`);
+            const fullPath = require$$1$5.resolve(nextPackage);
+            coreExports.info(`${nextPackage} -> ${fullPath}`);
+            ExecutionUtils.run('npm install', fullPath);
+            ExecutionUtils.run('ls -lah', fullPath);
         }
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());

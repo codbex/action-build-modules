@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import { InputUtils } from './InputUtils.js';
 
 import path from 'path';
+import { ExecutionUtils } from './ExecutionUtils.js';
 
 /**
  * The main function for the action.
@@ -23,7 +24,10 @@ export async function run(): Promise<void> {
             core.info(`${nextPackage} -> ${path.resolve(nextPackage)}`);
         }
         for (const nextPackage of buildPackages) {
-            core.info(`${nextPackage} -> ${path.resolve(nextPackage)}`);
+            const fullPath = path.resolve(nextPackage);
+            core.info(`${nextPackage} -> ${fullPath}`);
+            ExecutionUtils.run('npm install', fullPath);
+            ExecutionUtils.run('ls -lah', fullPath);
         }
 
         // Log the current timestamp, wait, then log the new timestamp
