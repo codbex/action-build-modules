@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import { wait } from './wait.js'
 
 /**
  * The main function for the action.
@@ -8,20 +7,24 @@ import { wait } from './wait.js'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    const packages = core.getMultilineInput('packages')
-    const buildPackages = core.getMultilineInput('build-packages')
-    const npmScope = core.getMultilineInput('npm-scope')
+    const packages = core.getInput('packages')
+    const packagesMultiline = core.getMultilineInput('packages')
+    const buildPackages = core.getInput('build-packages')
+    const buildPackagesMultiline = core.getMultilineInput('build-packages')
+    const npmScope = core.getInput('npm-scope')
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
     core.info(`packages: ${JSON.stringify(packages, null, 4)}`)
+    core.info(
+      `packagesMultiline: ${JSON.stringify(packagesMultiline, null, 4)}`
+    )
     core.info(`buildPackages: ${JSON.stringify(buildPackages, null, 4)}`)
+    core.info(
+      `buildPackagesMultiline: ${JSON.stringify(buildPackagesMultiline, null, 4)}`
+    )
     core.info(`npmScope: ${npmScope}`)
-    core.warning(`Waiting ${ms} milliseconds ...`)
 
     // Log the current timestamp, wait, then log the new timestamp
-    core.warning(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
     core.warning(new Date().toTimeString())
 
     // Set outputs for other workflow steps to use
