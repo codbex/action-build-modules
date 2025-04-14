@@ -27246,6 +27246,20 @@ function requireCore () {
 
 var coreExports = requireCore();
 
+class InputUtils {
+    static getInput(name) {
+        return coreExports.getInput(name);
+    }
+    static getArrayInput(name) {
+        return coreExports.getMultilineInput(name).map((e) => {
+            if (e.startsWith('-')) {
+                return e.substring(2).trim();
+            }
+            return e;
+        });
+    }
+}
+
 /**
  * The main function for the action.
  *
@@ -27253,9 +27267,9 @@ var coreExports = requireCore();
  */
 async function run() {
     try {
-        const packages = coreExports.getMultilineInput('packages');
-        const buildPackages = coreExports.getMultilineInput('packages-build');
-        const npmScope = coreExports.getInput('npm-scope');
+        const packages = InputUtils.getArrayInput('packages');
+        const buildPackages = InputUtils.getArrayInput('packages-build');
+        const npmScope = InputUtils.getInput('npm-scope');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         coreExports.info(`packages: ${JSON.stringify(packages.map((e) => e.substring(2).trim()))}`);
         coreExports.info(`buildPackages: ${JSON.stringify(buildPackages.map((e) => e.substring(2).trim()))}`);
