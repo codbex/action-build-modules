@@ -3,9 +3,14 @@ import { execSync } from 'child_process';
 
 export class ExecutionUtils {
     public static run(command: string, cwd: string): string {
-        core.info(`[${cwd}] $ ${command}`);
-        const result = execSync(command, { cwd, encoding: 'utf-8' });
-        core.info(result);
-        return result;
+        try {
+            core.startGroup(command);
+            core.info(`[${cwd}] $ ${command}`);
+            const result = execSync(command, { cwd, encoding: 'utf-8' });
+            core.info(result);
+            return result;
+        } finally {
+            core.endGroup();
+        }
     }
 }

@@ -27262,10 +27262,16 @@ class InputUtils {
 
 class ExecutionUtils {
     static run(command, cwd) {
-        coreExports.info(`[${cwd}] $ ${command}`);
-        const result = execSync(command, { cwd, encoding: 'utf-8' });
-        coreExports.info(result);
-        return result;
+        try {
+            coreExports.startGroup(command);
+            coreExports.info(`[${cwd}] $ ${command}`);
+            const result = execSync(command, { cwd, encoding: 'utf-8' });
+            coreExports.info(result);
+            return result;
+        }
+        finally {
+            coreExports.endGroup();
+        }
     }
 }
 
