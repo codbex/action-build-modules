@@ -41,6 +41,11 @@ export async function run(): Promise<void> {
                 if (!errors || errors.includes('error TS')) {
                     throw e;
                 }
+                core.startGroup((e as ExecException).message);
+                core.error((e as ExecException).message);
+                core.error((e as ExecException).stdout ?? '');
+                core.error((e as ExecException).stderr ?? '');
+                core.endGroup();
                 throw e;
                 core.warning('Ignoring codbex "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
