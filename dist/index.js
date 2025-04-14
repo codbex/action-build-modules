@@ -27306,14 +27306,13 @@ async function run() {
                 if (errors) {
                     errors = errors?.replaceAll('error TS2688:', '');
                 }
+                coreExports.info(`Errors is: ${errors}`);
                 if (!errors || errors.includes('error')) {
+                    coreExports.error(e.message);
+                    coreExports.error(e.stdout ?? '');
+                    coreExports.error(e.stderr ?? '');
                     throw e;
                 }
-                coreExports.info(`Errors is: ${errors}`);
-                coreExports.error(e.message);
-                coreExports.error(e.stdout ?? '');
-                coreExports.error(e.stderr ?? '');
-                throw e;
                 coreExports.warning('Ignoring codbex "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
             }

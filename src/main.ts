@@ -37,14 +37,13 @@ export async function run(): Promise<void> {
                 if (errors) {
                     errors = errors?.replaceAll('error TS2688:', '');
                 }
+                core.info(`Errors is: ${errors}`);
                 if (!errors || errors.includes('error')) {
+                    core.error((e as ExecException).message);
+                    core.error((e as ExecException).stdout ?? '');
+                    core.error((e as ExecException).stderr ?? '');
                     throw e;
                 }
-                core.info(`Errors is: ${errors}`);
-                core.error((e as ExecException).message);
-                core.error((e as ExecException).stdout ?? '');
-                core.error((e as ExecException).stderr ?? '');
-                throw e;
                 core.warning('Ignoring codbex "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
             }
