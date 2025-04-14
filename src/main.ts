@@ -30,11 +30,16 @@ export async function run(): Promise<void> {
             ExecutionUtils.run('ls -lah', fullPath);
             core.warning('Starting tsc ...');
             try {
-                ExecutionUtils.run('tsc --pretty', fullPath);
+                const result = ExecutionUtils.run('tsc --pretty', fullPath);
+                core.warning(`Result: ${result}`);
             } catch (e: unknown) {
                 core.warning(`Error occurred: ${e}`);
                 core.warning(`Error message: ${(e as Error).message}`);
-                core.warning(`Error cause: ${(e as Error).cause}`);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                if ((e as any).stderr) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    core.warning(`stderr: ${(e as any).stderr}`);
+                }
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }

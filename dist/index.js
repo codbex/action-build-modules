@@ -27263,7 +27263,7 @@ class InputUtils {
 class ExecutionUtils {
     static run(command, cwd) {
         console.log(`[${cwd}] $ ${command}`);
-        execSync(command, { cwd, stdio: 'inherit' });
+        return execSync(command, { cwd, encoding: 'utf-8' });
     }
 }
 
@@ -27291,12 +27291,17 @@ async function run() {
             ExecutionUtils.run('ls -lah', fullPath);
             coreExports.warning('Starting tsc ...');
             try {
-                ExecutionUtils.run('tsc --pretty', fullPath);
+                const result = ExecutionUtils.run('tsc --pretty', fullPath);
+                coreExports.warning(`Result: ${result}`);
             }
             catch (e) {
                 coreExports.warning(`Error occurred: ${e}`);
                 coreExports.warning(`Error message: ${e.message}`);
-                coreExports.warning(`Error cause: ${e.cause}`);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                if (e.stderr) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    coreExports.warning(`stderr: ${e.stderr}`);
+                }
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }
