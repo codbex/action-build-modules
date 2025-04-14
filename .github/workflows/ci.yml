@@ -57,9 +57,11 @@ jobs:
         id: test-action
         uses: ./
         with:
+          packages: |
+            - workspace/codbex-ai-ui
           packages-build: |
             - workspace/codbex-ai
-            - workspace/codbex-ai-ui
+            - workspace/codbex-ai-module-1
           npm-scope: codbex
 
       - name: Print Output

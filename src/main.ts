@@ -8,16 +8,12 @@ import * as core from '@actions/core'
 export async function run(): Promise<void> {
   try {
     const packages = core.getInput('packages')
-    const packagesMultiline = core.getMultilineInput('packages')
-    const buildPackages = core.getInput('packages-build')
-    const buildPackagesMultiline = core.getMultilineInput('packages-build')
+    const buildPackages = core.getMultilineInput('packages-build')
     const npmScope = core.getInput('npm-scope')
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.info(`packages: ${packages}`)
-    core.info(`packagesMultiline: ${packagesMultiline}`)
-    core.info(`buildPackages: ${buildPackages}`)
-    core.info(`buildPackagesMultiline: ${buildPackagesMultiline}`)
+    core.info(`packages: ${JSON.stringify(packages)}`)
+    core.info(`buildPackages: ${JSON.stringify(buildPackages)}`)
     core.info(`npmScope: ${npmScope}`)
 
     // Log the current timestamp, wait, then log the new timestamp
