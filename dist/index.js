@@ -27305,11 +27305,11 @@ async function run() {
             catch (e) {
                 const exception = e;
                 let errors = exception.stdout;
-                coreExports.info('----------------------------');
+                coreExports.info('-----------------------------');
                 for (let i = 0; i < errors.length; i++) {
                     console.log(`${errors?.charAt(i)}`);
                 }
-                coreExports.info('----------------------------');
+                coreExports.info('-----------------------------');
                 if (errors) {
                     errors = errors?.replaceAll(`${errorToken} TS2688: Cannot find type definition file for '../modules/types'`, '');
                 }

@@ -35,11 +35,11 @@ export async function run(): Promise<void> {
             } catch (e: unknown) {
                 const exception = e as ExecException;
                 let errors = exception.stdout;
-                core.info('----------------------------');
+                core.info('-----------------------------');
                 for (let i = 0; i < errors!.length; i++) {
                     console.log(`${errors?.charAt(i)}`);
                 }
-                core.info('----------------------------');
+                core.info('-----------------------------');
                 if (errors) {
                     errors = errors?.replaceAll(`${errorToken} TS2688: Cannot find type definition file for '../modules/types'`, '');
                 }
