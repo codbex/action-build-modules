@@ -8,7 +8,7 @@ import require$$0$4 from 'net';
 import require$$1$1 from 'tls';
 import require$$4 from 'events';
 import require$$0$3 from 'assert';
-import require$$0$2, { promisify } from 'util';
+import require$$0$2 from 'util';
 import require$$0$5 from 'stream';
 import require$$7 from 'buffer';
 import require$$8 from 'querystring';
@@ -25,7 +25,7 @@ import require$$1$4 from 'url';
 import require$$3$1 from 'zlib';
 import require$$6 from 'string_decoder';
 import require$$0$9 from 'diagnostics_channel';
-import require$$2$2, { exec as exec$1, execSync } from 'child_process';
+import require$$2$2, { execSync } from 'child_process';
 import require$$6$1 from 'timers';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -27261,14 +27261,9 @@ class InputUtils {
 }
 
 class ExecutionUtils {
-    static execAsync = promisify(exec$1);
     static run(command, cwd) {
         console.log(`[${cwd}] $ ${command}`);
         return execSync(command, { cwd, encoding: 'utf-8' });
-    }
-    static async runAsync(command, cwd) {
-        console.log(`[${cwd}] $ ${command}`);
-        return await ExecutionUtils.execAsync(`cd ${cwd} && ${command}`);
     }
 }
 
@@ -27296,21 +27291,17 @@ async function run() {
             ExecutionUtils.run('ls -lah', fullPath);
             coreExports.warning('Starting tsc ...');
             try {
-                const result = ExecutionUtils.run('tsc --pretty', fullPath);
-                coreExports.warning(`Result: ${JSON.stringify(result, null, 4)}`);
+                ExecutionUtils.run('tsc --pretty', fullPath);
             }
             catch (e) {
-                coreExports.warning(`Error occurred: ${e}`);
-                coreExports.warning(`Error cause: ${e.cause}`);
-                coreExports.warning(`Error cmd: ${e.cmd}`);
-                coreExports.warning(`Error code: ${e.code}`);
-                coreExports.warning(`Error killed: ${e.killed}`);
-                coreExports.warning(`Error message: ${e.message}`);
-                coreExports.warning(`Error name: ${e.name}`);
-                coreExports.warning(`Error signal: ${e.signal}`);
-                coreExports.warning(`Error stack: ${e.stack}`);
-                coreExports.warning(`Error stderr: ${e.stderr}`);
-                coreExports.warning(`Error stdout: ${e.stdout}`);
+                let errors = e.stdout;
+                if (errors) {
+                    errors = errors?.replaceAll('error TS2688:', '');
+                }
+                if (!errors || errors.includes('error TS')) {
+                    throw e;
+                }
+                coreExports.warning('Ignoring "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }

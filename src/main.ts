@@ -31,21 +31,16 @@ export async function run(): Promise<void> {
             ExecutionUtils.run('ls -lah', fullPath);
             core.warning('Starting tsc ...');
             try {
-                const result = ExecutionUtils.run('tsc --pretty', fullPath);
-                core.warning(`Result: ${JSON.stringify(result, null, 4)}`);
+                ExecutionUtils.run('tsc --pretty', fullPath);
             } catch (e: unknown) {
-                core.warning(`Error occurred: ${e}`);
-                core.warning(`Error cause: ${(e as ExecException).cause}`);
-                core.warning(`Error cmd: ${(e as ExecException).cmd}`);
-                core.warning(`Error code: ${(e as ExecException).code}`);
-                core.warning(`Error killed: ${(e as ExecException).killed}`);
-                core.warning(`Error message: ${(e as ExecException).message}`);
-                core.warning(`Error name: ${(e as ExecException).name}`);
-                core.warning(`Error signal: ${(e as ExecException).signal}`);
-                core.warning(`Error stack: ${(e as ExecException).stack}`);
-                core.warning(`Error stderr: ${(e as ExecException).stderr}`);
-                core.warning(`Error stdout: ${(e as ExecException).stdout}`);
-
+                let errors = (e as ExecException).stdout;
+                if (errors) {
+                    errors = errors?.replaceAll('error TS2688:', '');
+                }
+                if (!errors || errors.includes('error TS')) {
+                    throw e;
+                }
+                core.warning('Ignoring "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }
