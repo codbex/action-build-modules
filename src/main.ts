@@ -40,7 +40,7 @@ export async function run(): Promise<void> {
                 if (!errors || errors.includes('error TS')) {
                     throw e;
                 }
-                core.warning('Ignoring "sdk" related errors');
+                core.warning('Ignoring codbex "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }

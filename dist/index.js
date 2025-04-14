@@ -27262,8 +27262,10 @@ class InputUtils {
 
 class ExecutionUtils {
     static run(command, cwd) {
-        console.log(`[${cwd}] $ ${command}`);
-        return execSync(command, { cwd, encoding: 'utf-8' });
+        coreExports.info(`[${cwd}] $ ${command}`);
+        const result = execSync(command, { cwd, encoding: 'utf-8' });
+        coreExports.info(result);
+        return result;
     }
 }
 
@@ -27301,7 +27303,7 @@ async function run() {
                 if (!errors || errors.includes('error TS')) {
                     throw e;
                 }
-                coreExports.warning('Ignoring "sdk" related errors');
+                coreExports.warning('Ignoring codbex "sdk" related errors');
                 ExecutionUtils.run('ls -lah', fullPath);
             }
         }
