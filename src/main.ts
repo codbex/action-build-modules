@@ -35,7 +35,7 @@ export async function run(): Promise<void> {
             } catch (e: unknown) {
                 let errors = (e as ExecException).stdout;
                 if (errors) {
-                    errors = errors?.replaceAll('error TS2688:', '');
+                    errors = errors?.replaceAll('[91merror[0m[90m TS2688:', '');
                 }
                 core.info(`---------------------`);
                 for (let i = 0; i < errors!.length; i++) {
