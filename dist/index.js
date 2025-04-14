@@ -25,7 +25,7 @@ import require$$1$4 from 'url';
 import require$$3$1 from 'zlib';
 import require$$6 from 'string_decoder';
 import require$$0$9 from 'diagnostics_channel';
-import require$$2$2 from 'child_process';
+import require$$2$2, { execSync } from 'child_process';
 import require$$6$1 from 'timers';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -27246,6 +27246,37 @@ function requireCore () {
 
 var coreExports = requireCore();
 
+class InputUtils {
+    static getInput(name) {
+        return coreExports.getInput(name);
+    }
+    static getArrayInput(name) {
+        return coreExports.getMultilineInput(name).map((e) => {
+            if (e.startsWith('-')) {
+                return e.substring(2).trim();
+            }
+            return e;
+        });
+    }
+}
+
+class ExecutionUtils {
+    static run(command, cwd) {
+        try {
+            coreExports.startGroup(command);
+            coreExports.info(`[${cwd}] $ ${command}`);
+            const result = execSync(command, { cwd, encoding: 'utf-8' });
+            coreExports.info(result);
+            return result;
+        }
+        finally {
+            coreExports.endGroup();
+        }
+    }
+}
+
+const errorToken = `[91merror[0m[90m TS`;
+const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
 /**
  * The main function for the action.
  *
@@ -27253,13 +27284,27 @@ var coreExports = requireCore();
  */
 async function run() {
     try {
-        const packages = coreExports.getMultilineInput('packages');
-        const buildPackages = coreExports.getMultilineInput('build-packages');
-        const npmScope = coreExports.getMultilineInput('npm-scope');
+        const buildPackages = InputUtils.getArrayInput('packages-build');
+        const npmrc = InputUtils.getInput('npmrc');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        coreExports.info(`packages: ${JSON.stringify(packages, null, 4)}`);
-        coreExports.info(`buildPackages: ${JSON.stringify(buildPackages, null, 4)}`);
-        coreExports.info(`npmScope: ${npmScope}`);
+        for (const nextPackage of buildPackages) {
+            const fullPath = require$$1$5.resolve(nextPackage);
+            if (npmrc) {
+                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
+                ExecutionUtils.run(`cat .npmrc`, fullPath);
+            }
+            ExecutionUtils.run('npm install', fullPath);
+            if (npmrc) {
+                ExecutionUtils.run(`rm -rf .npmrc`, fullPath);
+            }
+            try {
+                ExecutionUtils.run('tsc --pretty', fullPath);
+            }
+            catch (e) {
+                ignoreKnownErrors(e);
+            }
+            ExecutionUtils.run('ls -lah', fullPath);
+        }
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());
         // Set outputs for other workflow steps to use
@@ -27270,6 +27315,19 @@ async function run() {
         if (error instanceof Error)
             coreExports.setFailed(error.message);
     }
+}
+function ignoreKnownErrors(e) {
+    let errors = e.stdout;
+    if (errors) {
+        errors = errors?.replaceAll(ignoreError, '');
+    }
+    if (!errors || errors.includes(errorToken)) {
+        coreExports.error(e.message);
+        coreExports.error(e.stdout ?? '');
+        coreExports.error(e.stderr ?? '');
+        throw e;
+    }
+    coreExports.warning('Ignoring codbex "sdk" related errors');
 }
 
 /**

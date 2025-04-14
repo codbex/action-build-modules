@@ -1,24 +1,21 @@
-name: The name of your action here
-description: Provide a description here
-author: Your name or organization here
+name: codbex - Build Modules
+description: Build NPM packages from an application model
+author: codbex
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: heart
-  color: red
+    icon: heart
+    color: red
 
 # Define your inputs here.
 inputs:
-  packages:
-    description: List of packages
-    required: false
-  build-packages:
-    description: List of package paths to build
-    required: false
-  npm-scope:
-    description: NPM scope
-    required: false
+    packages-build:
+        description: List of package paths to build
+        required: true
+    npmrc:
+        description: .npmrc config file content
+        required: false
 
 runs:
-  using: node20
-  main: dist/index.js
+    using: node20
+    main: dist/index.js

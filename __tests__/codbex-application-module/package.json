@@ -1,0 +1,9 @@
+{
+    "name": "codbex-application-module",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@codbex/codbex-countries": "^0.4.0"
+    }
+}
