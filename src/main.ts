@@ -12,9 +12,11 @@ export async function run(): Promise<void> {
     const npmScope = core.getInput('npm-scope')
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.info(`packages: ${JSON.stringify(packages)}`)
     core.info(
-      `buildPackages: ${JSON.stringify(buildPackages.map((e) => e.trim().substring(1)))}`
+      `packages: ${JSON.stringify(packages.map((e) => e.substring(2).trim()))}`
+    )
+    core.info(
+      `buildPackages: ${JSON.stringify(buildPackages.map((e) => e.substring(2).trim()))}`
     )
     core.info(`npmScope: ${npmScope}`)
 
