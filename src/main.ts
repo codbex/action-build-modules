@@ -14,14 +14,10 @@ export async function run(): Promise<void> {
     const npmScope = core.getInput('npm-scope')
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.info(`packages: ${JSON.stringify(packages, null, 4)}`)
-    core.info(
-      `packagesMultiline: ${JSON.stringify(packagesMultiline, null, 4)}`
-    )
-    core.info(`buildPackages: ${JSON.stringify(buildPackages, null, 4)}`)
-    core.info(
-      `buildPackagesMultiline: ${JSON.stringify(buildPackagesMultiline, null, 4)}`
-    )
+    core.info(`packages: ${packages}`)
+    core.info(`packagesMultiline: ${packagesMultiline}`)
+    core.info(`buildPackages: ${buildPackages}`)
+    core.info(`buildPackagesMultiline: ${buildPackagesMultiline}`)
     core.info(`npmScope: ${npmScope}`)
 
     // Log the current timestamp, wait, then log the new timestamp
