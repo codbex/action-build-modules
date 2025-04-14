@@ -1,0 +1,6 @@
+{
+    "name": "codbex-application-module",
+    "scripts": {
+        "build": "tsc"
+    }
+}

@@ -27274,6 +27274,12 @@ async function run() {
         coreExports.info(`packages: ${JSON.stringify(packages)}`);
         coreExports.info(`buildPackages: ${JSON.stringify(buildPackages)}`);
         coreExports.info(`npmScope: ${npmScope}`);
+        for (const nextPackage of packages) {
+            coreExports.info(`${nextPackage} -> ${require$$1$5.resolve(nextPackage)}`);
+        }
+        for (const nextPackage of buildPackages) {
+            coreExports.info(`${nextPackage} -> ${require$$1$5.resolve(nextPackage)}`);
+        }
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());
         // Set outputs for other workflow steps to use

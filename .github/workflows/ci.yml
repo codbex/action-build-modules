@@ -58,10 +58,9 @@ jobs:
               uses: ./
               with:
                   packages: |
-                      - workspace/codbex-ai-ui
+                      - __tests__/codbex-application-module-ui
                   packages-build: |
-                      - workspace/codbex-ai
-                      - workspace/codbex-ai-module-1
+                      - __tests__/codbex-application-module
                   npm-scope: codbex
 
             - name: Print Output

@@ -1,6 +1,8 @@
 import * as core from '@actions/core';
 import { InputUtils } from './InputUtils.js';
 
+import path from 'path';
+
 /**
  * The main function for the action.
  *
@@ -16,6 +18,13 @@ export async function run(): Promise<void> {
         core.info(`packages: ${JSON.stringify(packages)}`);
         core.info(`buildPackages: ${JSON.stringify(buildPackages)}`);
         core.info(`npmScope: ${npmScope}`);
+
+        for (const nextPackage of packages) {
+            core.info(`${nextPackage} -> ${path.resolve(nextPackage)}`);
+        }
+        for (const nextPackage of buildPackages) {
+            core.info(`${nextPackage} -> ${path.resolve(nextPackage)}`);
+        }
 
         // Log the current timestamp, wait, then log the new timestamp
         core.warning(new Date().toTimeString());
