@@ -27284,40 +27284,25 @@ const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition
  */
 async function run() {
     try {
-        const packages = InputUtils.getArrayInput('packages');
         const buildPackages = InputUtils.getArrayInput('packages-build');
-        const npmScope = InputUtils.getInput('npm-scope');
+        const npmrc = InputUtils.getInput('npmrc');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        coreExports.info(`packages: ${JSON.stringify(packages)}`);
-        coreExports.info(`buildPackages: ${JSON.stringify(buildPackages)}`);
-        coreExports.info(`npmScope: ${npmScope}`);
-        for (const nextPackage of packages) {
-            coreExports.info(`${nextPackage} -> ${require$$1$5.resolve(nextPackage)}`);
-        }
         for (const nextPackage of buildPackages) {
             const fullPath = require$$1$5.resolve(nextPackage);
-            coreExports.info(`${nextPackage} -> ${fullPath}`);
+            if (npmrc) {
+                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
+            }
             ExecutionUtils.run('npm install', fullPath);
-            ExecutionUtils.run('ls -lah', fullPath);
-            coreExports.warning('Starting tsc ...');
+            if (npmrc) {
+                ExecutionUtils.run(`rm -rf .npmrc`, fullPath);
+            }
             try {
                 ExecutionUtils.run('tsc --pretty', fullPath);
             }
             catch (e) {
-                const exception = e;
-                let errors = exception.stdout;
-                if (errors) {
-                    errors = errors?.replaceAll(ignoreError, '');
-                }
-                if (!errors || errors.includes(errorToken)) {
-                    coreExports.error(exception.message);
-                    coreExports.error(exception.stdout ?? '');
-                    coreExports.error(exception.stderr ?? '');
-                    throw e;
-                }
-                coreExports.warning('Ignoring codbex "sdk" related errors');
-                ExecutionUtils.run('ls -lah', fullPath);
+                ignoreKnownErrors(e);
             }
+            ExecutionUtils.run('ls -lah', fullPath);
         }
         // Log the current timestamp, wait, then log the new timestamp
         coreExports.warning(new Date().toTimeString());
@@ -27329,6 +27314,19 @@ async function run() {
         if (error instanceof Error)
             coreExports.setFailed(error.message);
     }
+}
+function ignoreKnownErrors(e) {
+    let errors = e.stdout;
+    if (errors) {
+        errors = errors?.replaceAll(ignoreError, '');
+    }
+    if (!errors || errors.includes(errorToken)) {
+        coreExports.error(e.message);
+        coreExports.error(e.stdout ?? '');
+        coreExports.error(e.stderr ?? '');
+        throw e;
+    }
+    coreExports.warning('Ignoring codbex "sdk" related errors');
 }
 
 /**
