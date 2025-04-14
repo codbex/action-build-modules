@@ -27246,20 +27246,6 @@ function requireCore () {
 
 var coreExports = requireCore();
 
-class InputUtils {
-    static getInput(name) {
-        return coreExports.getInput(name);
-    }
-    static getArrayInput(name) {
-        return coreExports.getMultilineInput(name).map((e) => {
-            if (e.startsWith('-')) {
-                return e.substring(2).trim();
-            }
-            return e;
-        });
-    }
-}
-
 class ExecutionUtils {
     static run(command, cwd) {
         try {
@@ -27275,27 +27261,30 @@ class ExecutionUtils {
     }
 }
 
+class InputUtils {
+    static getInput(name) {
+        return coreExports.getInput(name);
+    }
+    static getArrayInput(name) {
+        return coreExports.getMultilineInput(name).map((e) => {
+            if (e.startsWith('-')) {
+                return e.substring(2).trim();
+            }
+            return e;
+        });
+    }
+}
+
 const errorToken = `[91merror[0m[90m TS`;
 const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
-/**
- * The main function for the action.
- *
- * @returns Resolves when the action is complete.
- */
 async function run() {
     try {
         const buildPackages = InputUtils.getArrayInput('packages-build');
         const npmrc = InputUtils.getInput('npmrc');
-        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP');
-        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP/MVP');
-        ExecutionUtils.run('ls -lah', '/home/runner/work/MVP/MVP/workspace');
-        // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         for (const nextPackage of buildPackages) {
             const fullPath = require$$1$5.resolve(nextPackage);
-            ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath);
-                ExecutionUtils.run(`cat .npmrc`, fullPath);
             }
             ExecutionUtils.run('npm install', fullPath);
             if (npmrc) {
@@ -27307,17 +27296,12 @@ async function run() {
             catch (e) {
                 ignoreKnownErrors(e);
             }
-            ExecutionUtils.run('ls -lah', fullPath);
         }
-        // Log the current timestamp, wait, then log the new timestamp
-        coreExports.warning(new Date().toTimeString());
-        // Set outputs for other workflow steps to use
-        coreExports.setOutput('time', new Date().toTimeString());
     }
     catch (error) {
-        // Fail the workflow run if an error occurs
-        if (error instanceof Error)
+        if (error instanceof Error) {
             coreExports.setFailed(error.message);
+        }
     }
 }
 function ignoreKnownErrors(e) {
