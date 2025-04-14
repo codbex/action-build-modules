@@ -27255,8 +27255,8 @@ async function run() {
     try {
         const packages = coreExports.getInput('packages');
         const packagesMultiline = coreExports.getMultilineInput('packages');
-        const buildPackages = coreExports.getInput('build-packages');
-        const buildPackagesMultiline = coreExports.getMultilineInput('build-packages');
+        const buildPackages = coreExports.getInput('packages-build');
+        const buildPackagesMultiline = coreExports.getMultilineInput('packages-build');
         const npmScope = coreExports.getInput('npm-scope');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         coreExports.info(`packages: ${packages}`);

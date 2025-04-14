@@ -9,8 +9,8 @@ export async function run(): Promise<void> {
   try {
     const packages = core.getInput('packages')
     const packagesMultiline = core.getMultilineInput('packages')
-    const buildPackages = core.getInput('build-packages')
-    const buildPackagesMultiline = core.getMultilineInput('build-packages')
+    const buildPackages = core.getInput('packages-build')
+    const buildPackagesMultiline = core.getMultilineInput('packages-build')
     const npmScope = core.getInput('npm-scope')
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
