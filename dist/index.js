@@ -27296,7 +27296,7 @@ async function run() {
             ExecutionUtils.run('ls -lah', fullPath);
             coreExports.warning('Starting tsc ...');
             try {
-                const result = ExecutionUtils.runAsync('tsc --pretty', fullPath);
+                const result = ExecutionUtils.run('tsc --pretty', fullPath);
                 coreExports.warning(`Result: ${JSON.stringify(result, null, 4)}`);
             }
             catch (e) {
