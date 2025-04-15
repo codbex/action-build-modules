@@ -31248,6 +31248,9 @@ class InputUtils {
     static getInput(name) {
         return coreExports.getInput(name);
     }
+    static getBooleanInput(name) {
+        return coreExports.getBooleanInput(name);
+    }
     static getArrayInput(name) {
         return coreExports.getMultilineInput(name).map((e) => {
             if (e.startsWith('-')) {
@@ -31262,18 +31265,16 @@ const errorToken = `[91merror[0m[90m TS`;
 const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
 async function run() {
     try {
-        const buildPackages = InputUtils.getArrayInput('packages-build');
+        const buildPackages = InputUtils.getArrayInput('packages');
         const npmrc = InputUtils.getInput('npmrc');
+        const publish = InputUtils.getBooleanInput('publish');
+        const publishLatestVersion = InputUtils.getBooleanInput('publish-latest-version');
         for (const nextPackage of buildPackages) {
             coreExports.notice(`Building ${nextPackage} module ...`);
             const fullPath = require$$1$5.resolve(nextPackage);
-            if (npmrc) {
-                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
-            }
+            createNpmrc(fullPath, npmrc);
             ExecutionUtils.run('npm install', fullPath, 'Installing NPM dependencies');
-            if (npmrc) {
-                ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
-            }
+            removeNpmrc(fullPath, npmrc);
             try {
                 ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
             }
@@ -31283,14 +31284,8 @@ async function run() {
             finally {
                 coreExports.endGroup();
             }
-            if (npmrc) {
-                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
-            }
-            if (npmrc) {
-                const packageJson = JSON.parse(readFileSync(require$$1$5.join(fullPath, 'package.json'), 'utf-8'));
-                ExecutionUtils.run(`npm version ${packageJson.version}-${githubExports.context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
-                ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
-                ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
+            if (publish && npmrc) {
+                publishPackage(npmrc, fullPath, publishLatestVersion);
             }
         }
     }
@@ -31298,6 +31293,16 @@ async function run() {
         if (error instanceof Error) {
             coreExports.setFailed(error.message);
         }
+    }
+}
+function createNpmrc(fullPath, npmrc) {
+    if (npmrc) {
+        ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
+    }
+}
+function removeNpmrc(fullPath, npmrc) {
+    if (npmrc) {
+        ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
     }
 }
 function ignoreKnownErrors(e) {
@@ -31311,7 +31316,16 @@ function ignoreKnownErrors(e) {
         coreExports.error(e.stderr ?? '');
         throw e;
     }
-    coreExports.warning('Ignoring codbex "sdk" related errors');
+    coreExports.notice('Ignoring codbex "sdk" related errors');
+}
+function publishPackage(npmrc, fullPath, publishLatestVersion) {
+    createNpmrc(fullPath, npmrc);
+    const packageJson = JSON.parse(readFileSync(require$$1$5.join(fullPath, 'package.json'), 'utf-8'));
+    if (publishLatestVersion) {
+        ExecutionUtils.run(`npm version ${packageJson.version}-${githubExports.context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
+    }
+    ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
+    removeNpmrc(fullPath, npmrc);
 }
 
 /**

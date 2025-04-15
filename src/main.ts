@@ -11,19 +11,19 @@ const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition
 
 export async function run(): Promise<void> {
     try {
-        const buildPackages = InputUtils.getArrayInput('packages-build');
+        const buildPackages = InputUtils.getArrayInput('packages');
         const npmrc = InputUtils.getInput('npmrc');
+        const publish = InputUtils.getBooleanInput('publish');
+        const publishLatestVersion = InputUtils.getBooleanInput('publish-latest-version');
 
         for (const nextPackage of buildPackages) {
             core.notice(`Building ${nextPackage} module ...`);
             const fullPath = path.resolve(nextPackage);
-            if (npmrc) {
-                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
-            }
+
+            createNpmrc(fullPath, npmrc);
             ExecutionUtils.run('npm install', fullPath, 'Installing NPM dependencies');
-            if (npmrc) {
-                ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
-            }
+            removeNpmrc(fullPath, npmrc);
+
             try {
                 ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
             } catch (e: unknown) {
@@ -31,20 +31,26 @@ export async function run(): Promise<void> {
             } finally {
                 core.endGroup();
             }
-            if (npmrc) {
-                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
-            }
-            if (npmrc) {
-                const packageJson = JSON.parse(readFileSync(path.join(fullPath, 'package.json'), 'utf-8'));
-                ExecutionUtils.run(`npm version ${packageJson.version}-${context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
-                ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
-                ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
+            if (publish && npmrc) {
+                publishPackage(npmrc, fullPath, publishLatestVersion);
             }
         }
     } catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message);
         }
+    }
+}
+
+function createNpmrc(fullPath: string, npmrc: string) {
+    if (npmrc) {
+        ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
+    }
+}
+
+function removeNpmrc(fullPath: string, npmrc: string) {
+    if (npmrc) {
+        ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
     }
 }
 
@@ -59,5 +65,15 @@ function ignoreKnownErrors(e: ExecException) {
         core.error(e.stderr ?? '');
         throw e;
     }
-    core.warning('Ignoring codbex "sdk" related errors');
+    core.notice('Ignoring codbex "sdk" related errors');
+}
+
+function publishPackage(npmrc: string, fullPath: string, publishLatestVersion: boolean) {
+    createNpmrc(fullPath, npmrc);
+    const packageJson = JSON.parse(readFileSync(path.join(fullPath, 'package.json'), 'utf-8'));
+    if (publishLatestVersion) {
+        ExecutionUtils.run(`npm version ${packageJson.version}-${context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
+    }
+    ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
+    removeNpmrc(fullPath, npmrc);
 }

@@ -1,20 +1,24 @@
-name: codbex - Build Modules
-description: Build NPM packages from an application model
+name: codbex - Build Application Module
+description: Build NPM packages from an application module
 author: codbex
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-    icon: heart
-    color: red
+    icon: package
+    color: orange
 
-# Define your inputs here.
 inputs:
-    packages-build:
+    packages:
         description: List of package paths to build
         required: true
     npmrc:
         description: .npmrc config file content
         required: false
+    publish:
+        description: Whether to publish the NPM packages
+        default: 'false'
+    publish-latest-version:
+        description: Whether to add the commit SHAT to the version (e.g. 1.0.0-8bb4b5b9c3eb08b81b1be0fb2c533237c5cb5abb)
+        default: 'false'
 
 runs:
     using: node20
