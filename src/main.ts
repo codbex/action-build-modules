@@ -3,6 +3,7 @@ import { ExecException } from 'child_process';
 import path from 'path';
 import { ExecutionUtils } from './ExecutionUtils.js';
 import { InputUtils } from './InputUtils.js';
+import { context } from '@actions/github';
 
 const errorToken = `[91merror[0m[90m TS`;
 const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
@@ -33,6 +34,7 @@ export async function run(): Promise<void> {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
             }
             if (npmrc) {
+                ExecutionUtils.run(`npm version ${context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
                 ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
                 ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
             }
