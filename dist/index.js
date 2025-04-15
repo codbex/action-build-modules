@@ -27282,6 +27282,7 @@ async function run() {
         const buildPackages = InputUtils.getArrayInput('packages-build');
         const npmrc = InputUtils.getInput('npmrc');
         for (const nextPackage of buildPackages) {
+            coreExports.startGroup(`Building ${nextPackage} module`);
             const fullPath = require$$1$5.resolve(nextPackage);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
@@ -27302,6 +27303,9 @@ async function run() {
             }
             catch (e) {
                 ignoreKnownErrors(e);
+            }
+            finally {
+                coreExports.endGroup();
             }
         }
     }

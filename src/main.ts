@@ -13,6 +13,7 @@ export async function run(): Promise<void> {
         const npmrc = InputUtils.getInput('npmrc');
 
         for (const nextPackage of buildPackages) {
+            core.startGroup(`Building ${nextPackage} module`);
             const fullPath = path.resolve(nextPackage);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
@@ -32,6 +33,8 @@ export async function run(): Promise<void> {
                 }
             } catch (e: unknown) {
                 ignoreKnownErrors(e as ExecException);
+            } finally {
+                core.endGroup();
             }
         }
     } catch (error) {
