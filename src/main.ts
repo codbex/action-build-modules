@@ -1,9 +1,10 @@
 import * as core from '@actions/core';
+import { context } from '@actions/github';
 import { ExecException } from 'child_process';
+import { readFileSync } from 'fs';
 import path from 'path';
 import { ExecutionUtils } from './ExecutionUtils.js';
 import { InputUtils } from './InputUtils.js';
-import { context } from '@actions/github';
 
 const errorToken = `[91merror[0m[90m TS`;
 const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
@@ -34,7 +35,7 @@ export async function run(): Promise<void> {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
             }
             if (npmrc) {
-                const packageJson = await import(path.join(fullPath, 'package.json'));
+                const packageJson = JSON.parse(readFileSync(path.join(fullPath, 'package.json'), 'utf-8'));
                 ExecutionUtils.run(`npm version ${packageJson.version}-${context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
                 ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
                 ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');

@@ -1,6 +1,6 @@
 import require$$0 from 'os';
 import require$$0$1 from 'crypto';
-import require$$1 from 'fs';
+import require$$1, { readFileSync } from 'fs';
 import require$$1$5 from 'path';
 import require$$2$1 from 'http';
 import require$$3$1 from 'https';
@@ -27275,35 +27275,6 @@ function requireCore () {
 
 var coreExports = requireCore();
 
-class ExecutionUtils {
-    static run(command, cwd, groupName) {
-        try {
-            coreExports.startGroup(groupName ?? command);
-            coreExports.info(`${cwd} ${command}`);
-            const result = execSync(command, { cwd, encoding: 'utf-8', shell: '/bin/sh' });
-            coreExports.info(result);
-            return result;
-        }
-        finally {
-            coreExports.endGroup();
-        }
-    }
-}
-
-class InputUtils {
-    static getInput(name) {
-        return coreExports.getInput(name);
-    }
-    static getArrayInput(name) {
-        return coreExports.getMultilineInput(name).map((e) => {
-            if (e.startsWith('-')) {
-                return e.substring(2).trim();
-            }
-            return e;
-        });
-    }
-}
-
 var github = {};
 
 var context = {};
@@ -31258,6 +31229,35 @@ function requireGithub () {
 
 var githubExports = requireGithub();
 
+class ExecutionUtils {
+    static run(command, cwd, groupName) {
+        try {
+            coreExports.startGroup(groupName ?? command);
+            coreExports.info(`${cwd} ${command}`);
+            const result = execSync(command, { cwd, encoding: 'utf-8', shell: '/bin/sh' });
+            coreExports.info(result);
+            return result;
+        }
+        finally {
+            coreExports.endGroup();
+        }
+    }
+}
+
+class InputUtils {
+    static getInput(name) {
+        return coreExports.getInput(name);
+    }
+    static getArrayInput(name) {
+        return coreExports.getMultilineInput(name).map((e) => {
+            if (e.startsWith('-')) {
+                return e.substring(2).trim();
+            }
+            return e;
+        });
+    }
+}
+
 const errorToken = `[91merror[0m[90m TS`;
 const ignoreError = `[91merror[0m[90m TS2688: [0mCannot find type definition file for '../modules/types'.`;
 async function run() {
@@ -31287,7 +31287,7 @@ async function run() {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
             }
             if (npmrc) {
-                const packageJson = await import(require$$1$5.join(fullPath, 'package.json'));
+                const packageJson = JSON.parse(readFileSync(require$$1$5.join(fullPath, 'package.json'), 'utf-8'));
                 ExecutionUtils.run(`npm version ${packageJson.version}-${githubExports.context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
                 ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
                 ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
