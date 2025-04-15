@@ -34,7 +34,7 @@ export async function run(): Promise<void> {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
             }
             if (npmrc) {
-                ExecutionUtils.run(`npm version ${context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
+                ExecutionUtils.run(`npm version 0.0.0-${context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
                 ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
                 ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
             }
