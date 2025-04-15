@@ -22,7 +22,14 @@ export async function run(): Promise<void> {
                 ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
             }
             try {
+                if (npmrc) {
+                    ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
+                }
                 ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
+                if (npmrc) {
+                    ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
+                    ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
+                }
             } catch (e: unknown) {
                 ignoreKnownErrors(e as ExecException);
             }
