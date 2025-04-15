@@ -27282,7 +27282,7 @@ async function run() {
         const buildPackages = InputUtils.getArrayInput('packages-build');
         const npmrc = InputUtils.getInput('npmrc');
         for (const nextPackage of buildPackages) {
-            coreExports.startGroup(`Building ${nextPackage} module`);
+            coreExports.notice(`Building ${nextPackage} module ...`);
             const fullPath = require$$1$5.resolve(nextPackage);
             if (npmrc) {
                 ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
@@ -27292,20 +27292,20 @@ async function run() {
                 ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
             }
             try {
-                if (npmrc) {
-                    ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
-                }
                 ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
-                if (npmrc) {
-                    ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
-                    ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
-                }
             }
             catch (e) {
                 ignoreKnownErrors(e);
             }
             finally {
                 coreExports.endGroup();
+            }
+            if (npmrc) {
+                ExecutionUtils.run(`echo "${npmrc}" > .npmrc`, fullPath, 'Creating .npmrc');
+            }
+            if (npmrc) {
+                ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
+                ExecutionUtils.run(`rm -rf .npmrc`, fullPath, 'Removing .npmrc');
             }
         }
     }
