@@ -177,10 +177,6 @@ steps:
       uses: ./
       with:
           milliseconds: 1000
-
-    - name: Print Output
-      id: output
-      run: echo "${{ steps.test-action.outputs.time }}"
 ```
 
 For example workflow runs, check out the [Actions tab](https://github.com/actions/typescript-action/actions)! :rocket:
@@ -204,10 +200,6 @@ steps:
       uses: actions/typescript-action@v1 # Commit with the `v1` tag
       with:
           milliseconds: 1000
-
-    - name: Print Output
-      id: output
-      run: echo "${{ steps.test-action.outputs.time }}"
 ```
 
 ## Publishing a New Release
