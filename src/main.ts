@@ -1,7 +1,5 @@
 import * as core from '@actions/core';
-import { context } from '@actions/github';
 import { ExecException } from 'child_process';
-import { readFileSync } from 'fs';
 import path from 'path';
 import { ExecutionUtils } from './ExecutionUtils.js';
 import { InputUtils } from './InputUtils.js';
@@ -14,7 +12,7 @@ export async function run(): Promise<void> {
         const buildPackages = InputUtils.getArrayInput('packages');
         const npmrc = InputUtils.getInput('npmrc');
         const publish = InputUtils.getBooleanInput('publish');
-        const publishLatestVersion = InputUtils.getBooleanInput('publish-latest-version');
+        const version = InputUtils.getInput('version');
 
         for (const nextPackage of buildPackages) {
             core.notice(`Building ${nextPackage} module ...`);
@@ -32,7 +30,7 @@ export async function run(): Promise<void> {
                 core.endGroup();
             }
             if (publish && npmrc) {
-                publishPackage(npmrc, fullPath, publishLatestVersion);
+                publishPackage(npmrc, fullPath, version);
             }
         }
     } catch (error) {
@@ -68,12 +66,9 @@ function ignoreKnownErrors(e: ExecException) {
     core.notice('Ignoring codbex "sdk" related errors');
 }
 
-function publishPackage(npmrc: string, fullPath: string, publishLatestVersion: boolean) {
+function publishPackage(npmrc: string, fullPath: string, version: string) {
     createNpmrc(fullPath, npmrc);
-    const packageJson = JSON.parse(readFileSync(path.join(fullPath, 'package.json'), 'utf-8'));
-    if (publishLatestVersion) {
-        ExecutionUtils.run(`npm version ${packageJson.version}-${context.sha} --no-git-tag-version`, fullPath, 'Set the NPM version to the commit SHA');
-    }
+    ExecutionUtils.run(`npm version ${version} --no-git-tag-version`, fullPath, `Update the package version to '${version}'`);
     ExecutionUtils.run('npm publish --tag latest', fullPath, 'Publishing latest tag');
     removeNpmrc(fullPath, npmrc);
 }
