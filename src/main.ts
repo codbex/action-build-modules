@@ -23,7 +23,8 @@ export async function run(): Promise<void> {
             removeNpmrc(fullPath, npmrc);
 
             try {
-                ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
+                // ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
+                ExecutionUtils.run('npm run build', fullPath, 'Executing "build" script in package.json');
             } catch (e: unknown) {
                 ignoreKnownErrors(e as ExecException);
             } finally {
