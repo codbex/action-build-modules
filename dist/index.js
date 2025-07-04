@@ -27293,7 +27293,8 @@ async function run() {
             ExecutionUtils.run('npm install', fullPath, 'Installing NPM dependencies');
             removeNpmrc(fullPath, npmrc);
             try {
-                ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
+                // ExecutionUtils.run('tsc --pretty', fullPath, 'Compiling TypeScript');
+                ExecutionUtils.run('npm run build', fullPath, 'Executing "build" script in package.json');
             }
             catch (e) {
                 ignoreKnownErrors(e);
